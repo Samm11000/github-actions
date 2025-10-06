@@ -1,6 +1,6 @@
 name: BootRider CI/CD
 
-# 1️⃣ Trigger pipeline on push or pull request
+# Trigger pipeline on push or pull request
 on:
   push:
     branches:
@@ -10,7 +10,6 @@ on:
     branches:
       - main
 
-# 2️⃣ Define the job
 jobs:
   build-test-deploy:
     runs-on: ubuntu-latest
@@ -28,12 +27,26 @@ jobs:
 
       # Step 3: Install dependencies
       - name: Install dependencies
-        run: npm install
+        run: |
+          cd myapp
+          npm ci
 
       # Step 4: Run tests (QA step)
       - name: Run tests
-        run: npm test
+        run: |
+          cd myapp
+          npm test -- --watchAll=false --ci
 
       # Step 5: Build project
       - name: Build
-        run: npm run build
+        run: |
+          cd myapp
+          npm run build
+
+      # Step 6 (Optional): Deploy to Vercel
+      # - name: Deploy to Vercel
+      #   uses: amondnet/vercel-action@v20
+      #   with:
+      #     vercel-token: ${{ secrets.VERCEL_TOKEN }}
+      #     vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+      #     vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
